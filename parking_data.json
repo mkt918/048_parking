@@ -507,5 +507,48 @@
       }
     },
     "note": null
+  },
+  {
+    "id": 14,
+    "name": "いずみパーキング 名駅第3",
+    "coords": [
+      35.2026624,
+      136.9767936
+    ],
+    "distance": "9348m",
+    "capacity": null,
+    "price_structure": {
+      "weekday": {
+        "day": {
+          "start": "08:00",
+          "end": "22:00",
+          "price": 300,
+          "unit_minutes": 15
+        },
+        "night": {
+          "start": "22:00",
+          "end": "08:00",
+          "price": 100,
+          "unit_minutes": 60
+        },
+        "max": 1800
+      },
+      "weekend": {
+        "day": {
+          "start": "08:00",
+          "end": "22:00",
+          "price": 300,
+          "unit_minutes": 15
+        },
+        "night": {
+          "start": "22:00",
+          "end": "08:00",
+          "price": 100,
+          "unit_minutes": 60
+        },
+        "max": 1800
+      }
+    },
+    "note": null
   }
 ]
