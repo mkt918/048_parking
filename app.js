@@ -198,7 +198,10 @@ function createCardHtml(parking) {
             <div class="w-px h-8 bg-gray-200"></div>
             <div class="flex flex-col flex-1 pl-2">
                 <span class="text-[10px] text-gray-500 font-medium">最大料金</span>
-                <span class="text-sm font-bold text-gray-900">${data.max ? '¥' + data.max.toLocaleString() : '-'}</span>
+                <div class="flex items-baseline gap-1">
+                    <span class="text-sm font-bold text-gray-900">${data.max ? '¥' + data.max.toLocaleString() : '-'}</span>
+                    ${data.max_desc ? `<span class="text-[10px] text-gray-400">(${data.max_desc})</span>` : ''}
+                </div>
             </div>
         </div>
 
