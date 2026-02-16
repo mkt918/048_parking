@@ -2,169 +2,467 @@
   {
     "id": 1,
     "name": "クリスタルパーキング",
-    "coords": [35.1706, 136.8817],
-    "price": {
-      "hourly": 400,
-      "max_day": null,
-      "unit": "30分200円",
-      "currency": "JPY"
-    },
+    "coords": [
+      35.1706,
+      136.8817
+    ],
     "distance": "80m",
     "capacity": "140台",
+    "price_structure": {
+      "weekday": {
+        "day": {
+          "start": "08:00",
+          "end": "22:00",
+          "price": 200,
+          "unit_minutes": 30
+        },
+        "night": {
+          "start": "22:00",
+          "end": "08:00",
+          "price": 100,
+          "unit_minutes": 60
+        },
+        "max": null
+      },
+      "weekend": {
+        "day": {
+          "start": "08:00",
+          "end": "22:00",
+          "price": 200,
+          "unit_minutes": 30
+        },
+        "night": {
+          "start": "22:00",
+          "end": "08:00",
+          "price": 100,
+          "unit_minutes": 60
+        },
+        "max": null
+      }
+    },
     "note": "新幹線口から徒歩1分"
   },
   {
     "id": 2,
     "name": "JPタワー名古屋駐車場",
-    "coords": [35.1698, 136.8823],
-    "price": {
-      "hourly": null,
-      "max_day": 3000,
-      "unit": "1日3,000円",
-      "currency": "JPY"
-    },
+    "coords": [
+      35.1698,
+      136.8823
+    ],
     "distance": "339m",
     "capacity": null,
+    "price_structure": {
+      "weekday": {
+        "day": {
+          "start": "00:00",
+          "end": "24:00",
+          "price": 320,
+          "unit_minutes": 30
+        },
+        "night": null,
+        "max": 3000
+      },
+      "weekend": {
+        "day": {
+          "start": "00:00",
+          "end": "24:00",
+          "price": 320,
+          "unit_minutes": 30
+        },
+        "night": null,
+        "max": 3000
+      }
+    },
     "note": "24時間営業"
   },
   {
     "id": 3,
     "name": "エムテック名駅パーキング",
-    "coords": [35.1694, 136.8827],
-    "price": {
-      "hourly": null,
-      "max_day": 1430,
-      "unit": "7:30-24:00 1,430円/日",
-      "currency": "JPY"
-    },
+    "coords": [
+      35.1694,
+      136.8827
+    ],
     "distance": "364m",
     "capacity": null,
+    "price_structure": {
+      "weekday": {
+        "day": {
+          "start": "08:00",
+          "end": "22:00",
+          "price": 100,
+          "unit_minutes": 20
+        },
+        "night": {
+          "start": "22:00",
+          "end": "08:00",
+          "price": 100,
+          "unit_minutes": 60
+        },
+        "max": 1430
+      },
+      "weekend": {
+        "day": {
+          "start": "08:00",
+          "end": "22:00",
+          "price": 100,
+          "unit_minutes": 15
+        },
+        "night": {
+          "start": "22:00",
+          "end": "08:00",
+          "price": 100,
+          "unit_minutes": 60
+        },
+        "max": 1430
+      }
+    },
     "note": "2時間550円パック有"
   },
   {
     "id": 4,
     "name": "トラストパーク桜通豊田ビル",
-    "coords": [35.1689, 136.8842],
-    "price": {
-      "hourly": null,
-      "max_day": null,
-      "unit": "予約制",
-      "currency": "JPY"
-    },
+    "coords": [
+      35.1689,
+      136.8842
+    ],
     "distance": "461m",
     "capacity": null,
-    "note": "akippa予約可能"
+    "price_structure": {
+      "weekday": {
+        "day": {
+          "start": "00:00",
+          "end": "24:00",
+          "price": 0,
+          "unit_minutes": 0
+        },
+        "night": null,
+        "max": null
+      },
+      "weekend": {
+        "day": {
+          "start": "00:00",
+          "end": "24:00",
+          "price": 0,
+          "unit_minutes": 0
+        },
+        "night": null,
+        "max": null
+      }
+    },
+    "note": "予約制(akippa)"
   },
   {
     "id": 5,
     "name": "ＮＰＤ大橋ビルディング",
-    "coords": [35.1687, 136.8849],
-    "price": {
-      "hourly": null,
-      "max_day": 2200,
-      "unit": "1日2,200円",
-      "currency": "JPY"
-    },
+    "coords": [
+      35.1687,
+      136.8849
+    ],
     "distance": "491m",
     "capacity": null,
+    "price_structure": {
+      "weekday": {
+        "day": {
+          "start": "00:00",
+          "end": "24:00",
+          "price": 300,
+          "unit_minutes": 30
+        },
+        "night": null,
+        "max": 2200
+      },
+      "weekend": {
+        "day": {
+          "start": "00:00",
+          "end": "24:00",
+          "price": 300,
+          "unit_minutes": 30
+        },
+        "night": null,
+        "max": 2200
+      }
+    },
     "note": "特P予約可(15h 1,212円)"
   },
   {
     "id": 6,
     "name": "三井のリパーク名駅西第18",
-    "coords": [35.1709, 136.8793],
-    "price": {
-      "hourly": 400,
-      "max_day": 800,
-      "unit": "30分200円/最大800円",
-      "currency": "JPY"
-    },
+    "coords": [
+      35.1709,
+      136.8793
+    ],
     "distance": "350m",
     "capacity": null,
-    "note": "平日6時間800円"
+    "price_structure": {
+      "weekday": {
+        "day": {
+          "start": "08:00",
+          "end": "20:00",
+          "price": 200,
+          "unit_minutes": 30
+        },
+        "night": {
+          "start": "20:00",
+          "end": "08:00",
+          "price": 100,
+          "unit_minutes": 60
+        },
+        "max": 800
+      },
+      "weekend": {
+        "day": {
+          "start": "08:00",
+          "end": "20:00",
+          "price": 200,
+          "unit_minutes": 30
+        },
+        "night": {
+          "start": "20:00",
+          "end": "08:00",
+          "price": 100,
+          "unit_minutes": 60
+        },
+        "max": 800
+      }
+    },
+    "note": "平日日中最大800円"
   },
   {
     "id": 7,
     "name": "タイムズ太閤1丁目",
-    "coords": [35.1724, 136.8798],
-    "price": {
-      "hourly": 220,
-      "max_day": 1320,
-      "unit": "60分220円/最大1,320円",
-      "currency": "JPY"
-    },
+    "coords": [
+      35.1724,
+      136.8798
+    ],
     "distance": "400m",
     "capacity": null,
+    "price_structure": {
+      "weekday": {
+        "day": {
+          "start": "08:00",
+          "end": "18:00",
+          "price": 220,
+          "unit_minutes": 60
+        },
+        "night": {
+          "start": "18:00",
+          "end": "08:00",
+          "price": 110,
+          "unit_minutes": 60
+        },
+        "max": 1320
+      },
+      "weekend": {
+        "day": {
+          "start": "08:00",
+          "end": "18:00",
+          "price": 220,
+          "unit_minutes": 60
+        },
+        "night": {
+          "start": "18:00",
+          "end": "08:00",
+          "price": 110,
+          "unit_minutes": 60
+        },
+        "max": 1100
+      }
+    },
     "note": "日祝最大1,100円"
   },
   {
     "id": 8,
     "name": "JR東海パーキング",
-    "coords": [35.1728, 136.8801],
-    "price": {
-      "hourly": 300,
-      "max_day": null,
-      "unit": "60分300円",
-      "currency": "JPY"
-    },
+    "coords": [
+      35.1728,
+      136.8801
+    ],
     "distance": "400m",
     "capacity": null,
+    "price_structure": {
+      "weekday": {
+        "day": {
+          "start": "08:00",
+          "end": "20:00",
+          "price": 300,
+          "unit_minutes": 60
+        },
+        "night": {
+          "start": "20:00",
+          "end": "08:00",
+          "price": 100,
+          "unit_minutes": 60
+        },
+        "max": null
+      },
+      "weekend": {
+        "day": {
+          "start": "08:00",
+          "end": "20:00",
+          "price": 300,
+          "unit_minutes": 60
+        },
+        "night": {
+          "start": "20:00",
+          "end": "08:00",
+          "price": 100,
+          "unit_minutes": 60
+        },
+        "max": null
+      }
+    },
     "note": "8:00-20:00"
   },
   {
     "id": 9,
     "name": "パークゼウス名駅2丁目",
-    "coords": [35.1695, 136.8810],
-    "price": {
-      "hourly": null,
-      "max_day": 1300,
-      "unit": "当日最大1,300円",
-      "currency": "JPY"
-    },
+    "coords": [
+      35.1695,
+      136.8810
+    ],
     "distance": "250m",
     "capacity": null,
+    "price_structure": {
+      "weekday": {
+        "day": {
+          "start": "08:00",
+          "end": "20:00",
+          "price": 200,
+          "unit_minutes": 30
+        },
+        "night": {
+          "start": "20:00",
+          "end": "08:00",
+          "price": 100,
+          "unit_minutes": 60
+        },
+        "max": 1300
+      },
+      "weekend": {
+        "day": {
+          "start": "08:00",
+          "end": "20:00",
+          "price": 200,
+          "unit_minutes": 30
+        },
+        "night": {
+          "start": "20:00",
+          "end": "08:00",
+          "price": 100,
+          "unit_minutes": 60
+        },
+        "max": 1300
+      }
+    },
     "note": null
   },
   {
     "id": 10,
     "name": "NPC24H名駅３丁目",
-    "coords": [35.1692, 136.8806],
-    "price": {
-      "hourly": null,
-      "max_day": 1900,
-      "unit": "12時間1,900円",
-      "currency": "JPY"
-    },
+    "coords": [
+      35.1692,
+      136.8806
+    ],
     "distance": "300m",
     "capacity": null,
+    "price_structure": {
+      "weekday": {
+        "day": {
+          "start": "00:00",
+          "end": "24:00",
+          "price": 200,
+          "unit_minutes": 30
+        },
+        "night": null,
+        "max": 1900
+      },
+      "weekend": {
+        "day": {
+          "start": "00:00",
+          "end": "24:00",
+          "price": 200,
+          "unit_minutes": 30
+        },
+        "night": null,
+        "max": 1900
+      }
+    },
     "note": "4時間1,500円"
   },
   {
     "id": 11,
     "name": "名駅前（立駐）名鉄協商",
-    "coords": [35.1703, 136.8790],
-    "price": {
-      "hourly": null,
-      "max_day": 1300,
-      "unit": "24時間1,300円",
-      "currency": "JPY"
-    },
+    "coords": [
+      35.1703,
+      136.8790
+    ],
     "distance": "420m",
     "capacity": null,
+    "price_structure": {
+      "weekday": {
+        "day": {
+          "start": "00:00",
+          "end": "24:00",
+          "price": 300,
+          "unit_minutes": 60
+        },
+        "night": null,
+        "max": 1300
+      },
+      "weekend": {
+        "day": {
+          "start": "00:00",
+          "end": "24:00",
+          "price": 300,
+          "unit_minutes": 60
+        },
+        "night": null,
+        "max": 1300
+      }
+    },
     "note": null
   },
   {
     "id": 12,
     "name": "ルーセントタワー駐車場",
-    "coords": [35.1713, 136.8837],
-    "price": {
-      "hourly": null,
-      "max_day": 1600,
-      "unit": "24時間1,600円",
-      "currency": "JPY"
-    },
+    "coords": [
+      35.1713,
+      136.8837
+    ],
     "distance": "450m",
     "capacity": null,
+    "price_structure": {
+      "weekday": {
+        "day": {
+          "start": "07:00",
+          "end": "24:00",
+          "price": 260,
+          "unit_minutes": 30
+        },
+        "night": {
+          "start": "00:00",
+          "end": "07:00",
+          "price": 130,
+          "unit_minutes": 60
+        },
+        "max": 1600
+      },
+      "weekend": {
+        "day": {
+          "start": "07:00",
+          "end": "24:00",
+          "price": 260,
+          "unit_minutes": 30
+        },
+        "night": {
+          "start": "00:00",
+          "end": "07:00",
+          "price": 130,
+          "unit_minutes": 60
+        },
+        "max": 1600
+      }
+    },
     "note": null
   }
 ]
