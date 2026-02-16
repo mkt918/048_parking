@@ -1,0 +1,170 @@
+[
+  {
+    "id": 1,
+    "name": "クリスタルパーキング",
+    "coords": [35.1706, 136.8817],
+    "price": {
+      "hourly": 400,
+      "max_day": null,
+      "unit": "30分200円",
+      "currency": "JPY"
+    },
+    "distance": "80m",
+    "capacity": "140台",
+    "note": "新幹線口から徒歩1分"
+  },
+  {
+    "id": 2,
+    "name": "JPタワー名古屋駐車場",
+    "coords": [35.1698, 136.8823],
+    "price": {
+      "hourly": null,
+      "max_day": 3000,
+      "unit": "1日3,000円",
+      "currency": "JPY"
+    },
+    "distance": "339m",
+    "capacity": null,
+    "note": "24時間営業"
+  },
+  {
+    "id": 3,
+    "name": "エムテック名駅パーキング",
+    "coords": [35.1694, 136.8827],
+    "price": {
+      "hourly": null,
+      "max_day": 1430,
+      "unit": "7:30-24:00 1,430円/日",
+      "currency": "JPY"
+    },
+    "distance": "364m",
+    "capacity": null,
+    "note": "2時間550円パック有"
+  },
+  {
+    "id": 4,
+    "name": "トラストパーク桜通豊田ビル",
+    "coords": [35.1689, 136.8842],
+    "price": {
+      "hourly": null,
+      "max_day": null,
+      "unit": "予約制",
+      "currency": "JPY"
+    },
+    "distance": "461m",
+    "capacity": null,
+    "note": "akippa予約可能"
+  },
+  {
+    "id": 5,
+    "name": "ＮＰＤ大橋ビルディング",
+    "coords": [35.1687, 136.8849],
+    "price": {
+      "hourly": null,
+      "max_day": 2200,
+      "unit": "1日2,200円",
+      "currency": "JPY"
+    },
+    "distance": "491m",
+    "capacity": null,
+    "note": "特P予約可(15h 1,212円)"
+  },
+  {
+    "id": 6,
+    "name": "三井のリパーク名駅西第18",
+    "coords": [35.1709, 136.8793],
+    "price": {
+      "hourly": 400,
+      "max_day": 800,
+      "unit": "30分200円/最大800円",
+      "currency": "JPY"
+    },
+    "distance": "350m",
+    "capacity": null,
+    "note": "平日6時間800円"
+  },
+  {
+    "id": 7,
+    "name": "タイムズ太閤1丁目",
+    "coords": [35.1724, 136.8798],
+    "price": {
+      "hourly": 220,
+      "max_day": 1320,
+      "unit": "60分220円/最大1,320円",
+      "currency": "JPY"
+    },
+    "distance": "400m",
+    "capacity": null,
+    "note": "日祝最大1,100円"
+  },
+  {
+    "id": 8,
+    "name": "JR東海パーキング",
+    "coords": [35.1728, 136.8801],
+    "price": {
+      "hourly": 300,
+      "max_day": null,
+      "unit": "60分300円",
+      "currency": "JPY"
+    },
+    "distance": "400m",
+    "capacity": null,
+    "note": "8:00-20:00"
+  },
+  {
+    "id": 9,
+    "name": "パークゼウス名駅2丁目",
+    "coords": [35.1695, 136.8810],
+    "price": {
+      "hourly": null,
+      "max_day": 1300,
+      "unit": "当日最大1,300円",
+      "currency": "JPY"
+    },
+    "distance": "250m",
+    "capacity": null,
+    "note": null
+  },
+  {
+    "id": 10,
+    "name": "NPC24H名駅３丁目",
+    "coords": [35.1692, 136.8806],
+    "price": {
+      "hourly": null,
+      "max_day": 1900,
+      "unit": "12時間1,900円",
+      "currency": "JPY"
+    },
+    "distance": "300m",
+    "capacity": null,
+    "note": "4時間1,500円"
+  },
+  {
+    "id": 11,
+    "name": "名駅前（立駐）名鉄協商",
+    "coords": [35.1703, 136.8790],
+    "price": {
+      "hourly": null,
+      "max_day": 1300,
+      "unit": "24時間1,300円",
+      "currency": "JPY"
+    },
+    "distance": "420m",
+    "capacity": null,
+    "note": null
+  },
+  {
+    "id": 12,
+    "name": "ルーセントタワー駐車場",
+    "coords": [35.1713, 136.8837],
+    "price": {
+      "hourly": null,
+      "max_day": 1600,
+      "unit": "24時間1,600円",
+      "currency": "JPY"
+    },
+    "distance": "450m",
+    "capacity": null,
+    "note": null
+  }
+]
