@@ -13,7 +13,7 @@ sys.stdout.reconfigure(encoding='utf-8')
 
 # Constants
 JSON_PATH = os.path.join(os.path.dirname(__file__), '..', 'parking_data.json')
-NAGOYA_STATION = (35.1706, 136.8817) # Lat, Lng
+NAGOYA_STATION = (35.1706, 136.8817)
 
 def get_coordinates_from_url(url):
     print("URLを解析中...")
@@ -23,12 +23,10 @@ def get_coordinates_from_url(url):
             url, 
             headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) width=device-width'}
         )
-        
         with urllib.request.urlopen(req, context=context) as response:
             final_url = response.geturl()
             html = response.read().decode('utf-8', errors='ignore')
             
-            # Extract Coordinates
             match = re.search(r'@(-?\d+\.\d+),(-?\d+\.\d+)', final_url)
             if not match:
                 match = re.search(r'content=".*?center=(-?\d+\.\d+)%2C(-?\d+\.\d+)', html)
@@ -40,7 +38,6 @@ def get_coordinates_from_url(url):
             else:
                 print("座標の自動取得に失敗しました。")
                 
-            # Extract Name
             name = "新規駐車場"
             title_match = re.search(r'<meta property="og:title" content="(.*?)">', html)
             if title_match:
@@ -52,7 +49,6 @@ def get_coordinates_from_url(url):
                     name = title_match2.group(1)
             
             return coords, name
-
     except Exception as e:
         print(f"エラーが発生しました: {e}")
         return None, "新規駐車場"
@@ -75,9 +71,7 @@ def input_default(prompt, default_val):
 
 def create_entry(coords, name):
     print("\n--- 料金情報の入力 ---")
-    print("※分からない場合はEnterでスキップ（デフォルト値が使われます）")
     
-    # 1. 時間帯の設定
     print("\n[共通設定] 時間帯の設定")
     day_start = input_default("昼間 開始時間 (例: 08:00)", "08:00")
     day_end = input_default("昼間 終了時間 = 夜間 開始時間 (例: 22:00)", "22:00")
@@ -88,11 +82,9 @@ def create_entry(coords, name):
     def_w_night_p = 100
     def_w_night_u = 60
     
-    # 2. Open Inputs for Weekday
     print("\n[平日] 料金設定")
     w_day_p = int(input_default(f"昼間 料金(円)", def_w_day_p))
     w_day_u = int(input_default(f"昼間 単位(分)", def_w_day_u))
-    
     w_night_p = int(input_default(f"夜間 料金(円)", def_w_night_p))
     w_night_u = int(input_default(f"夜間 単位(分)", def_w_night_u))
 
@@ -100,10 +92,17 @@ def create_entry(coords, name):
     max_price = int(max_price_in) if max_price_in.lower() != 'null' else None
     
     w_max_desc = ""
+    w_max2 = None
+    w_max2_desc = None
+
     if max_price:
         w_max_desc = input_default(f"最大料金の条件 (例: 24時間, 当日24時まで)", "24時間")
+        # Ask for Max 2
+        has_max2 = input_default("別の最大料金設定はありますか? (y/n)", "n").lower() == 'y'
+        if has_max2:
+            w_max2 = int(input_default("最大料金2(円)", 800))
+            w_max2_desc = input_default("最大料金2の条件 (例: 5時間)", "5時間")
 
-    # 3. Weekend
     print("\n[休日] 料金設定")
     same_as_weekday = input_default("休日は平日と同じですか? (y/n)", "y").lower() == 'y'
     
@@ -111,6 +110,7 @@ def create_entry(coords, name):
         h_day_p, h_day_u = w_day_p, w_day_u
         h_night_p, h_night_u = w_night_p, w_night_u
         h_max, h_max_desc = max_price, w_max_desc
+        h_max2, h_max2_desc = w_max2, w_max2_desc
     else:
         h_day_p = int(input_default(f"昼間 料金(円)", 300))
         h_day_u = int(input_default(f"昼間 単位(分)", 30))
@@ -120,13 +120,20 @@ def create_entry(coords, name):
         h_max_in = input_default(f"最大料金(円) (なし=null)", str(max_price if max_price else 1500))
         h_max = int(h_max_in) if h_max_in.lower() != 'null' else None
         h_max_desc = ""
+        h_max2 = None
+        h_max2_desc = None
+        
         if h_max:
              h_max_desc = input_default(f"最大料金の条件", w_max_desc if w_max_desc else "24時間")
+             has_max2 = input_default("別の最大料金設定はありますか? (y/n)", "n").lower() == 'y'
+             if has_max2:
+                h_max2 = int(input_default("最大料金2(円)", 800))
+                h_max2_desc = input_default("最大料金2の条件 (例: 5時間)", "5時間")
 
     # Note
     print("\n[その他]")
-    note = input_default("備考 (例: 予約可)", "")
-    capacity = input_default("収容台数 (例: 10台)", "")
+    note = input_default("備考", "")
+    capacity = input_default("収容台数", "")
 
     entry = {
         "id": 0,
@@ -139,13 +146,17 @@ def create_entry(coords, name):
                 "day": { "start": day_start, "end": day_end, "price": w_day_p, "unit_minutes": w_day_u },
                 "night": { "start": day_end, "end": day_start, "price": w_night_p, "unit_minutes": w_night_u },
                 "max": max_price,
-                "max_desc": w_max_desc if max_price else None
+                "max_desc": w_max_desc if max_price else None,
+                "max2": w_max2,
+                "max2_desc": w_max2_desc if w_max2 else None
             },
             "weekend": {
                 "day": { "start": day_start, "end": day_end, "price": h_day_p, "unit_minutes": h_day_u },
                 "night": { "start": day_end, "end": day_start, "price": h_night_p, "unit_minutes": h_night_u },
                 "max": h_max,
-                "max_desc": h_max_desc if h_max else None
+                "max_desc": h_max_desc if h_max else None,
+                "max2": h_max2,
+                "max2_desc": h_max2_desc if h_max2 else None
             }
         },
         "note": note if note else None
@@ -153,11 +164,10 @@ def create_entry(coords, name):
     return entry
 
 def main():
-    print("=== 名古屋パーキング マップデータ追加ツール v1.1 ===")
+    print("=== 名古屋パーキング マップデータ追加ツール v1.2 ===")
     url = input("Google MapsのURLを入力してください:\n> ").strip()
     
-    if not url:
-        return
+    if not url: return
 
     coords, name = get_coordinates_from_url(url)
     
@@ -165,8 +175,7 @@ def main():
         print("座標取得失敗。手動入力:")
         try:
             coords = [float(input("緯度: ")), float(input("経度: "))]
-        except:
-            return
+        except: return
 
     new_entry = create_entry(coords, name)
     

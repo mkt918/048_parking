@@ -202,6 +202,11 @@ function createCardHtml(parking) {
                     <span class="text-sm font-bold text-gray-900">${data.max ? '¥' + data.max.toLocaleString() : '-'}</span>
                     ${data.max_desc ? `<span class="text-[10px] text-gray-400">(${data.max_desc})</span>` : ''}
                 </div>
+                ${data.max2 ? `
+                <div class="flex items-baseline gap-1 mt-0.5">
+                    <span class="text-xs font-bold text-gray-700">¥${data.max2.toLocaleString()}</span>
+                    ${data.max2_desc ? `<span class="text-[10px] text-gray-400">(${data.max2_desc})</span>` : ''}
+                </div>` : ''}
             </div>
         </div>
 
