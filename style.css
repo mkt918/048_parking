@@ -1,205 +1,182 @@
-/* Custom CSS for Nagoya Parking Map */
+/* Custom CSS for Nagoya Parking Map - Redesign */
 
-* {
-    font-family: 'Inter', 'Noto Sans JP', sans-serif;
-}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap');
 
 body {
-    min-height: 100vh;
-}
-
-/* Map Container */
-#map {
-    position: relative;
-    z-index: 1;
+    font-family: 'Inter', 'Noto Sans JP', sans-serif;
+    -webkit-font-smoothing: antialiased;
 }
 
 /* Custom Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
+    width: 4px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-    background: #f1f5f9;
-    border-radius: 10px;
+    background: transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
     background: #cbd5e1;
-    border-radius: 10px;
-    transition: all 0.3s ease;
+    border-radius: 4px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
 }
 
-/* Sort Buttons */
-.sort-btn {
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    background: #f8fafc;
-    color: #64748b;
-    border: 1px solid #e2e8f0;
-    transition: all 0.2s ease;
-    cursor: pointer;
-}
-
-.sort-btn:hover {
-    background: #f1f5f9;
-    border-color: #cbd5e1;
-    transform: translateY(-1px);
-}
-
+/* Active Sort Button */
 .sort-btn.active {
-    background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+    background: #2563eb;
     color: white;
-    border-color: #3b82f6;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
-/* Parking List Item */
-.parking-item {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.75rem;
-    padding: 1rem;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.parking-item:hover {
-    border-color: #3b82f6;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
-    transform: translateX(4px);
-}
-
-.parking-item.selected {
-    border-color: #3b82f6;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
-    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
-}
-
-/* Custom Marker Styling */
-.price-marker {
+/* Parking List Card */
+.parking-card {
     background: white;
-    border: 2px solid #3b82f6;
-    border-radius: 20px;
-    padding: 4px 10px;
-    font-size: 12px;
-    font-weight: 600;
-    color: #1e40af;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    white-space: nowrap;
+    border: 1px solid #f1f5f9;
+    border-radius: 16px;
+    padding: 16px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
     position: relative;
+    overflow: hidden;
 }
 
-.price-marker::after {
+.parking-card::before {
     content: '';
     position: absolute;
-    bottom: -6px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 6px solid white;
-    filter: drop-shadow(0 2px 1px rgba(0, 0, 0, 0.1));
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: #2563eb;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-.price-marker.selected {
-    background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+.parking-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    border-color: #e2e8f0;
+}
+
+.parking-card.selected {
+    border-color: #2563eb;
+    background: #f8fafc;
+    box-shadow: 0 12px 24px rgba(37, 99, 235, 0.15);
+}
+
+.parking-card.selected::before {
+    opacity: 1;
+}
+
+/* Price Marker - Redesigned */
+.modern-marker {
+    background: white;
+    padding: 6px 14px;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    font-weight: 700;
+    font-size: 13px;
+    color: #1e293b;
+    border: 2px solid white;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.modern-marker::before {
+    content: 'P';
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    background: #2563eb;
     color: white;
-    border-color: #1e40af;
-    transform: scale(1.15);
+    border-radius: 50%;
+    font-size: 10px;
+}
+
+.modern-marker.cheap {
+    color: #059669;
+}
+
+.modern-marker.cheap::before {
+    background: #059669;
+}
+
+.modern-marker:hover,
+.modern-marker.active {
+    transform: scale(1.15) translateY(-5px);
     z-index: 1000 !important;
+    border-color: #2563eb;
 }
 
-.price-marker.selected::after {
-    border-top-color: #6366f1;
+.modern-marker.active {
+    background: #2563eb;
+    color: white;
 }
 
-/* Leaflet Popup Customization */
+.modern-marker.active::before {
+    background: white;
+    color: #2563eb;
+}
+
+/* Leaflet Customizations */
 .leaflet-popup-content-wrapper {
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-    font-family: 'Inter', 'Noto Sans JP', sans-serif;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    padding: 0;
+    overflow: hidden;
 }
 
 .leaflet-popup-content {
-    margin: 16px;
-    font-size: 14px;
+    margin: 0;
+    width: 280px !important;
 }
 
-/* Price Badge */
-.price-badge {
-    display: inline-block;
-    background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
-    color: white;
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.025em;
+.leaflet-container a.leaflet-popup-close-button {
+    color: #64748b;
+    padding: 8px;
+    font: 24px/24px Tahoma, Verdana, sans-serif;
 }
 
-.price-badge.secondary {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+/* Mobile Bottom Sheet Handle */
+#sheetHandle {
+    touch-action: none;
 }
 
 /* Animations */
-@keyframes fadeIn {
+@keyframes slideUp {
     from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
-.parking-item {
-    animation: fadeIn 0.3s ease-out;
+.animate-entry {
+    animation: slideUp 0.4s ease-out forwards;
+    opacity: 0;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .price-marker {
-        font-size: 10px;
-        padding: 3px 8px;
-    }
-    
-    #map {
-        height: 400px !important;
-    }
+.delay-1 {
+    animation-delay: 0.1s;
 }
 
-/* Loading State */
-.loading {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    color: #64748b;
+.delay-2 {
+    animation-delay: 0.2s;
 }
 
-.loading::after {
-    content: '';
-    width: 20px;
-    height: 20px;
-    border: 3px solid #e2e8f0;
-    border-top-color: #3b82f6;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin-left: 0.5rem;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+.delay-3 {
+    animation-delay: 0.3s;
 }

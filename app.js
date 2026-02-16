@@ -1,249 +1,271 @@
-// Nagoya Station Parking Map Application
+// Nagoya Station Parking Map Application - Modern Redesign
 
 let map;
-let markers = [];
+let markers = {};
 let parkingData = [];
 let currentSort = 'default';
 let selectedParkingId = null;
+let isMobile = window.innerWidth < 768;
 
-// Initialize the application
+// DOM Elements
+const elements = {
+    listContainer: document.getElementById('parkingList'),
+    mobileListContainer: document.getElementById('mobileListContent'),
+    countDisplay: document.getElementById('parkingCount'),
+    sortButtons: document.querySelectorAll('.sort-btn'),
+    mobileSheet: document.getElementById('mobileSheet'),
+    sheetHandle: document.getElementById('sheetHandle')
+};
+
+// Initialize
 document.addEventListener('DOMContentLoaded', async () => {
     await loadParkingData();
     initializeMap();
-    renderParkingList();
+    renderLists();
     setupEventListeners();
+    setupMobileSheet();
 });
 
-// Load parking data from JSON
+// Load Data
 async function loadParkingData() {
     try {
         const response = await fetch('parking_data.json');
         parkingData = await response.json();
     } catch (error) {
         console.error('Failed to load parking data:', error);
-        parkingData = [];
     }
 }
 
-// Initialize Leaflet map
+// Initialize Leaflet
 function initializeMap() {
-    // Center on Nagoya Station
+    // Nagoya Station Coordinates
     const nagoyaStation = [35.1706, 136.8817];
-    
-    map = L.map('map').setView(nagoyaStation, 16);
-    
-    // Use OpenStreetMap tiles
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
-        maxZoom: 19
+
+    // Custom Map Style (Light/Clean)
+    map = L.map('map', {
+        zoomControl: false, // Move zoom control
+        attributionControl: false
+    }).setView(nagoyaStation, 16);
+
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 20
     }).addTo(map);
-    
-    // Add a circle to show 500m radius
+
+    // 500m Radius
     L.circle(nagoyaStation, {
-        color: '#3b82f6',
+        color: '#2563eb',
         fillColor: '#3b82f6',
-        fillOpacity: 0.1,
+        fillOpacity: 0.05,
         radius: 500,
-        weight: 2,
-        dashArray: '5, 10'
+        weight: 1,
+        dashArray: '4, 8'
     }).addTo(map);
-    
-    // Add markers for each parking lot
+
     addMarkers();
 }
 
-// Add markers to the map
+// Add Markers
 function addMarkers() {
-    // Clear existing markers
-    markers.forEach(marker => marker.remove());
-    markers = [];
-    
-    const sortedData = getSortedData();
-    
-    sortedData.forEach((parking, index) => {
-        const priceDisplay = getPriceDisplay(parking);
-        
-        // Create custom icon with price
-        const customIcon = L.divIcon({
-            className: 'price-marker',
-            html: `<div class="price-marker" data-id="${parking.id}">${priceDisplay}</div>`,
-            iconSize: [60, 32],
-            iconAnchor: [30, 32]
+    // Clear existing
+    Object.values(markers).forEach(m => m.remove());
+    markers = {};
+
+    parkingData.forEach(parking => {
+        const price = getBestPrice(parking);
+        const iconHtml = `<div class="modern-marker ${price < 300 ? 'cheap' : ''}" id="marker-${parking.id}">
+            ¥${price.toLocaleString()}
+        </div>`;
+
+        const icon = L.divIcon({
+            className: 'custom-div-icon',
+            html: iconHtml,
+            iconSize: [null, null],
+            iconAnchor: [30, 42]
         });
-        
-        const marker = L.marker(parking.coords, { icon: customIcon })
-            .addTo(map)
-            .bindPopup(createPopupContent(parking));
-        
-        // Add click event
-        marker.on('click', () => selectParking(parking.id));
-        
-        markers.push(marker);
+
+        const marker = L.marker(parking.coords, { icon: icon }).addTo(map);
+
+        marker.on('click', () => {
+            selectParking(parking.id);
+            if (isMobile) openMobileSheet();
+        });
+
+        markers[parking.id] = marker;
     });
-    
-    updateMarkerStyles();
 }
 
-// Get price display text
-function getPriceDisplay(parking) {
-    if (parking.price.max_day) {
-        return `¥${parking.price.max_day.toLocaleString()}`;
-    } else if (parking.price.hourly) {
-        return `¥${parking.price.hourly}/h`;
-    } else {
-        return parking.price.unit.split(' ')[0] || '要確認';
-    }
+function getBestPrice(parking) {
+    if (parking.price.hourly) return parking.price.hourly;
+    if (parking.price.max_day) return Math.round(parking.price.max_day / 24); // Approximation for display
+    return 0;
 }
 
-// Create popup content
-function createPopupContent(parking) {
-    const hourlyPrice = parking.price.hourly 
-        ? `<span class="price-badge">時間: ¥${parking.price.hourly}</span>` 
-        : '';
-    const dailyPrice = parking.price.max_day 
-        ? `<span class="price-badge secondary">1日最大: ¥${parking.price.max_day.toLocaleString()}</span>` 
-        : '';
-    
+// Render Lists (Both Desktop & Mobile)
+function renderLists() {
+    const sortedData = getSortedData();
+    const count = sortedData.length;
+
+    // Update count
+    elements.countDisplay.textContent = `${count}件`;
+
+    // Clear lists
+    elements.listContainer.innerHTML = '';
+    elements.mobileListContainer.innerHTML = '';
+
+    sortedData.forEach((parking, index) => {
+        const cardHtml = createCardHtml(parking);
+
+        // Desktop List
+        const desktopDiv = document.createElement('div');
+        desktopDiv.className = `parking-card animate-entry delay-${Math.min(index, 3)}`;
+        desktopDiv.innerHTML = cardHtml;
+        desktopDiv.dataset.id = parking.id;
+        desktopDiv.onclick = () => selectParking(parking.id);
+        elements.listContainer.appendChild(desktopDiv);
+
+        // Mobile List
+        const mobileDiv = document.createElement('div');
+        mobileDiv.className = `parking-card animate-entry delay-${Math.min(index, 3)}`;
+        mobileDiv.innerHTML = cardHtml;
+        mobileDiv.dataset.id = parking.id;
+        mobileDiv.onclick = () => {
+            selectParking(parking.id);
+            // On mobile, just select, don't close sheet
+        };
+        elements.mobileListContainer.appendChild(mobileDiv);
+    });
+}
+
+function createCardHtml(parking) {
     return `
-        <div style="min-width: 200px;">
-            <h3 style="font-weight: 600; font-size: 16px; margin-bottom: 8px; color: #1f2937;">
-                ${parking.name}
-            </h3>
-            <div style="margin-bottom: 8px;">
-                ${hourlyPrice} ${dailyPrice}
-            </div>
-            <p style="font-size: 12px; color: #6b7280; margin: 4px 0;">
-                ${parking.price.unit}
-            </p>
-            ${parking.distance ? `<p style="font-size: 12px; color: #6b7280; margin: 4px 0;">📍 名古屋駅から ${parking.distance}</p>` : ''}
-            ${parking.capacity ? `<p style="font-size: 12px; color: #6b7280; margin: 4px 0;">🚗 収容台数: ${parking.capacity}</p>` : ''}
-            ${parking.note ? `<p style="font-size: 12px; color: #3b82f6; margin: 4px 0;">💡 ${parking.note}</p>` : ''}
+        <div class="flex justify-between items-start mb-2">
+            <h3 class="font-bold text-gray-800 text-sm leading-snug flex-1">${parking.name}</h3>
+            <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded ml-2 whitespace-nowrap">
+                ${parking.distance}
+            </span>
         </div>
+        <div class="flex items-center gap-3 mb-2">
+            <div class="flex flex-col">
+                <span class="text-[10px] text-gray-500 font-medium">時間料金</span>
+                <span class="text-sm font-bold text-gray-900">${parking.price.hourly ? '¥' + parking.price.hourly : '-'}</span>
+            </div>
+            <div class="w-px h-6 bg-gray-100"></div>
+            <div class="flex flex-col">
+                <span class="text-[10px] text-gray-500 font-medium">最大料金</span>
+                <span class="text-sm font-bold text-gray-900">${parking.price.max_day ? '¥' + parking.price.max_day.toLocaleString() : '-'}</span>
+            </div>
+        </div>
+        ${parking.note ? `<p class="text-xs text-gray-500 bg-gray-50 p-2 rounded flex items-start gap-1">
+            <span class="text-blue-500">ℹ</span> ${parking.note}
+        </p>` : ''}
     `;
 }
 
-// Render parking list in sidebar
-function renderParkingList() {
-    const listContainer = document.getElementById('parkingList');
-    const sortedData = getSortedData();
-    
-    listContainer.innerHTML = sortedData.map(parking => `
-        <div class="parking-item" data-id="${parking.id}">
-            <div class="flex items-start justify-between mb-2">
-                <h3 class="font-semibold text-gray-800 text-sm flex-1">${parking.name}</h3>
-                ${parking.distance ? `<span class="text-xs text-gray-500 ml-2">${parking.distance}</span>` : ''}
-            </div>
-            <div class="flex flex-wrap gap-1 mb-2">
-                ${parking.price.hourly ? `<span class="price-badge">¥${parking.price.hourly}/h</span>` : ''}
-                ${parking.price.max_day ? `<span class="price-badge secondary">1日 ¥${parking.price.max_day.toLocaleString()}</span>` : ''}
-            </div>
-            <p class="text-xs text-gray-600 mb-1">${parking.price.unit}</p>
-            ${parking.note ? `<p class="text-xs text-blue-600">💡 ${parking.note}</p>` : ''}
-        </div>
-    `).join('');
-    
-    // Update count
-    document.getElementById('parkingCount').textContent = `全${sortedData.length}件`;
-    
-    // Add click events to list items
-    document.querySelectorAll('.parking-item').forEach(item => {
-        item.addEventListener('click', () => {
-            const id = parseInt(item.dataset.id);
-            selectParking(id);
-            
-            // Scroll map to marker
-            const parking = parkingData.find(p => p.id === id);
-            if (parking) {
-                map.setView(parking.coords, 17, { animate: true });
-            }
-        });
-    });
-    
-    updateListItemStyles();
-}
-
-// Select a parking lot
-function selectParking(id) {
-    selectedParkingId = id;
-    updateMarkerStyles();
-    updateListItemStyles();
-}
-
-// Update marker styles based on selection
-function updateMarkerStyles() {
-    document.querySelectorAll('.price-marker').forEach(marker => {
-        const markerId = parseInt(marker.dataset.id);
-        if (markerId === selectedParkingId) {
-            marker.classList.add('selected');
-        } else {
-            marker.classList.remove('selected');
-        }
-    });
-}
-
-// Update list item styles based on selection
-function updateListItemStyles() {
-    document.querySelectorAll('.parking-item').forEach(item => {
-        const itemId = parseInt(item.dataset.id);
-        if (itemId === selectedParkingId) {
-            item.classList.add('selected');
-        } else {
-            item.classList.remove('selected');
-        }
-    });
-}
-
-// Get sorted data based on current sort option
+// Data Sorting
 function getSortedData() {
     const data = [...parkingData];
-    
     switch (currentSort) {
-        case 'hourly':
-            return data.sort((a, b) => {
-                const aPrice = a.price.hourly || Infinity;
-                const bPrice = b.price.hourly || Infinity;
-                return aPrice - bPrice;
-            });
-        case 'daily':
-            return data.sort((a, b) => {
-                const aPrice = a.price.max_day || Infinity;
-                const bPrice = b.price.max_day || Infinity;
-                return aPrice - bPrice;
-            });
-        case 'distance':
-            return data.sort((a, b) => {
-                const aDistance = parseInt(a.distance) || Infinity;
-                const bDistance = parseInt(b.distance) || Infinity;
-                return aDistance - bDistance;
-            });
-        default:
-            return data;
+        case 'hourly': return data.sort((a, b) => (a.price.hourly || 9999) - (b.price.hourly || 9999));
+        case 'daily': return data.sort((a, b) => (a.price.max_day || 99999) - (b.price.max_day || 99999));
+        case 'distance': return data.sort((a, b) => parseInt(a.distance) - parseInt(b.distance));
+        default: return data;
     }
 }
 
-// Setup event listeners
+// Selection Logic
+function selectParking(id) {
+    selectedParkingId = id;
+    const parking = parkingData.find(p => p.id === id);
+
+    // Pan Map
+    if (parking) {
+        map.setView(parking.coords, 18, { animate: true, duration: 0.8 });
+    }
+
+    // Update UI Classes
+    document.querySelectorAll('.parking-card').forEach(card => {
+        if (parseInt(card.dataset.id) === id) {
+            card.classList.add('selected');
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+            card.classList.remove('selected');
+        }
+    });
+
+    // Update Markers
+    Object.values(markers).forEach(marker => {
+        const el = marker.getElement().querySelector('.modern-marker');
+        if (el) el.classList.remove('active');
+    });
+    const selectedMarker = markers[id];
+    if (selectedMarker) {
+        const el = selectedMarker.getElement().querySelector('.modern-marker');
+        if (el) el.classList.add('active');
+    }
+}
+
+// Mobile Bottom Sheet Logic
+function setupMobileSheet() {
+    let startY = 0;
+    let currentY = 0;
+    const sheet = elements.mobileSheet;
+
+    elements.sheetHandle.addEventListener('touchstart', (e) => {
+        startY = e.touches[0].clientY;
+        sheet.style.transition = 'none';
+    });
+
+    elements.sheetHandle.addEventListener('touchmove', (e) => {
+        currentY = e.touches[0].clientY;
+        const diff = currentY - startY;
+        if (diff > 0) {
+            sheet.style.transform = `translateY(${diff}px)`;
+        }
+    });
+
+    elements.sheetHandle.addEventListener('touchend', () => {
+        sheet.style.transition = 'transform 0.3s ease-out';
+        if (currentY - startY > 100) {
+            closeMobileSheet();
+        } else {
+            openMobileSheet();
+        }
+    });
+}
+
+function openMobileSheet() {
+    elements.mobileSheet.classList.remove('translate-y-[calc(100%-80px)]');
+    elements.mobileSheet.classList.add('translate-y-0');
+}
+
+function closeMobileSheet() {
+    elements.mobileSheet.classList.add('translate-y-[calc(100%-80px)]');
+    elements.mobileSheet.classList.remove('translate-y-0');
+}
+
+// Events
 function setupEventListeners() {
-    // Sort buttons
-    document.querySelectorAll('.sort-btn').forEach(btn => {
+    elements.sortButtons.forEach(btn => {
         btn.addEventListener('click', () => {
-            const sortType = btn.dataset.sort;
-            currentSort = sortType;
-            
-            // Update active state
-            document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            
-            // Re-render
-            addMarkers();
-            renderParkingList();
+            elements.sortButtons.forEach(b => b.classList.remove('active', 'bg-blue-600', 'text-white'));
+            elements.sortButtons.forEach(b => b.classList.add('text-gray-500', 'hover:bg-gray-100'));
+
+            btn.classList.add('active', 'bg-blue-600', 'text-white');
+            btn.classList.remove('text-gray-500', 'hover:bg-gray-100');
+
+            currentSort = btn.dataset.sort;
+            renderLists();
+            initializeMap(); // Re-render markers with new sort order if needed (or just addMarkers)
         });
     });
-    
-    // Update info button
+
     document.getElementById('updateInfoBtn').addEventListener('click', () => {
-        // Open Google Form or GitHub Issue
-        const message = encodeURIComponent('駐車場情報の修正・追加の提案をこちらに記入してください。');
-        const url = `https://github.com/mkt918/nagoya-parking-map/issues/new?title=情報修正の提案&body=${message}`;
+        const url = `https://github.com/mkt918/nagoya-parking-map/issues/new?title=情報修正の提案`;
         window.open(url, '_blank');
     });
 }
+
